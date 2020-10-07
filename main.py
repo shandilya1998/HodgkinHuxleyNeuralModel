@@ -68,8 +68,7 @@ for i in tqdm(range(400)):
     #"""
     I_pat = np.zeros(niter)
     for i in range(niter):
-        if i%2000 == 0:
-            I_pat[i] = (i%2000)/2000
+        I_pat[i] = (i%2000)/2000
     #"""
     hh = HHModel(dt, niter)
     hh(I_inp, I_pat)
