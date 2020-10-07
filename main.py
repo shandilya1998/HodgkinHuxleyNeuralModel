@@ -53,7 +53,7 @@ spike_freqs = []
 curr = []
 for i in tqdm(range(400)):
     I_inp = i*0.003
-    #I_pat = np.sin(2*np.pi*np.arange(0, niter/10, 0.1))
+    I_pat = np.sin(np.arange(0, niter*0.005, 0.005))
     
     """
     I_pat = np.ones(niter)
@@ -65,14 +65,14 @@ for i in tqdm(range(400)):
         count +=1
         I_pat[i] = I_pat[i]*sign
     #"""
-    #"""
+    """
     I_pat = np.zeros(niter)
     for i in range(niter):
         I_pat[i] = (i%2000)/2000
     #"""
     hh = HHModel(dt, niter)
     hh(I_inp, I_pat)
-    hh.plot('plots/saw_tooth_wav/simulation_Iinp{inp}.png'.format(inp = I_inp))
+    hh.plot('plots/sinusoidal_curr/simulation_Iinp{inp}.png'.format(inp = I_inp))
     curr.append(I_inp)
     spike_freqs.append(find_freq(hh.v_hist, niter, dt, div))
     hh.reset()
@@ -82,5 +82,5 @@ axes.plot(curr, spike_freqs)
 axes.set_xlabel('current')
 axes.set_ylabel('spike freq')
 axes.set_title('Current vs Spike Frequency')
-fig.savefig('plots/freq_plot_saw_tooth_wav.png')
+fig.savefig('plots/freq_plot_sinusoidal_curr.png')
 plt.show()
