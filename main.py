@@ -72,16 +72,16 @@ def find_freq(hh, niter, dt, div):
 div = 0.001
 
 dt = 0.01
-niter = 20000
+niter = 10000
 hh = HHModel(dt, niter)
 spike_freqs = []
 curr = []
 for i in tqdm(range(1800)):
     I_inp = i*0.0005
-    I_pat = np.ones(niter)
+    #I_pat = np.ones(niter)
     #I_pat = np.sin(np.arange(0, niter*0.005, 0.005))
     
-    """
+    #"""
     I_pat = np.ones(niter)
     count = 0
     sign = 1
@@ -98,9 +98,9 @@ for i in tqdm(range(1800)):
     #"""
     hh = HHModel(dt, niter)
     hh(I_inp, I_pat)
-    if not os.path.exists('plots/constant_curr/'):
-        os.mkdir('plots/constant_curr/')
-    hh.plot('plots/constant_curr/simulation_Iinp{inp}.png'.format(inp = I_inp))
+    if not os.path.exists('plots/square_wav_curr/'):
+        os.mkdir('plots/square_wav_curr/')
+    hh.plot('plots/square_wav_curr/simulation_Iinp{inp}.png'.format(inp = I_inp))
     curr.append(I_inp)
     spike_freqs.append(find_freq(hh, niter, dt, div))
     hh.reset()
@@ -127,5 +127,5 @@ axes[1][1].plot(curr, v_avg)
 axes[1][1].set_xlabel('current')
 axes[1][1].set_ylabel('average peak voltage')
 axes[1][1].set_title('Average Peak Voltage vs Current')
-fig.savefig('plots/freq_plot_sinusoidal_curr.png')
+fig.savefig('plots/freq_plot_square_wav_curr.png')
 plt.show()
