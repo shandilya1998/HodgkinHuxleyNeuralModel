@@ -18,15 +18,36 @@ class HHModel:
         self.t = np.arange(self.niter)*dt
         self.m_hist = np.zeros(self.niter)
         self.m = 0.0530
-        self.gNa_hist = np.zeros(self.niter, dtype = dtype)
-        self.gK_hist = np.zeros(self.niter, dtype= dtype)
-        self.gTot_hist = np.zeros(self.niter, dtype= dtype)
-        self.v_hist = np.zeros(self.niter, dtype= dtype)
+        self.gNa_hist = np.zeros(self.niter)
+        self.gK_hist = np.zeros(self.niter)
+        self.gTot_hist = np.zeros(self.niter)
+        self.v_hist = np.zeros(self.niter)
         self.v = -64.9964
-        self.h_hist = np.zeros(self.niter, dtype= dtype)
+        self.h_hist = np.zeros(self.niter)
         self.h = 0.5960
-        self.n_hist = np.zeros(self.niter, dtype= dtype)
+        self.n_hist = np.zeros(self.niter)
         self.n = 0.3177
+
+    def reset(self):
+        self.gK_max = 0.36
+        self.gNa_max = 1.20
+        self.vK = -77 
+        self.vNa = 50
+        self.gL = 0.003
+        self.vL = -54.387
+        self.Cm = 0.01
+        self.t = np.arange(self.niter)*self.dt
+        self.m_hist = np.zeros(self.niter)
+        self.m = 0.0530
+        self.gNa_hist = np.zeros(self.niter)
+        self.gK_hist = np.zeros(self.niter)
+        self.gTot_hist = np.zeros(self.niter)
+        self.v_hist = np.zeros(self.niter)
+        self.v = -64.9964
+        self.h_hist = np.zeros(self.niter)
+        self.h = 0.5960
+        self.n_hist = np.zeros(self.niter)
+        self.n = 0.3177 
 
     def gNa(self):
         return self.gNa_max*(self.m**3)*self.h
@@ -46,51 +67,51 @@ class HHModel:
     def _v(self, it):
         v_inf = self.v_inf(it)
         tauv = self.tauv(it)
-        return v_inf + (self.v - v_inf)*np.exp(-self.dt/tauv, dtype = dtype)
+        return v_inf + (self.v - v_inf)*np.exp(-self.dt/tauv)
     
     def alpha_m(self):
-        return 0.1*(self.v + 40)/(1-np.exp(-(self.v + 40)/10, dtype= dtype))
+        return 0.1*(self.v + 40)/(1-np.exp(-(self.v + 40)/10))
 
     def beta_m(self):
-        return 4*np.exp(-0.0556*(self.v + 65), dtype= dtype)
+        return 4*np.exp(-0.0556*(self.v + 65))
 
     def alpha_n(self):
-        return 0.01*(self.v+55)/(1-np.exp(-(self.v+55)/10, dtype= dtype))
+        return 0.01*(self.v+55)/(1-np.exp(-(self.v+55)/10))
 
     def beta_n(self):
-        return 0.125*np.exp(-(self.v+65)/80, dtype= dtype)
+        return 0.125*np.exp(-(self.v+65)/80)
 
     def alpha_h(self):
-        return 0.07*np.exp(-0.05*(self.v+65), dtype= dtype)
+        return 0.07*np.exp(-0.05*(self.v+65))
 
     def beta_h(self):
-        return 1/(1+np.exp(-0.1*(self.v+35), dtype= dtype))
+        return 1/(1+np.exp(-0.1*(self.v+35)))
 
     def _m(self):
         alpha_m = self.alpha_m()
         beta_m = self.beta_m()
         taum = 1/(alpha_m + beta_m)
         m_inf = alpha_m*taum
-        return m_inf + (self.m - m_inf)*np.exp(-self.dt/taum, dtype= dtype)
+        return m_inf + (self.m - m_inf)*np.exp(-self.dt/taum)
 
     def _h(self):
         alpha_h = self.alpha_h()
         beta_h = self.beta_h()
         tauh = 1/(alpha_h + beta_h)
         h_inf = alpha_h*tauh
-        return h_inf + (self.h - h_inf)*np.exp(-self.dt/tauh, dtype= dtype)
+        return h_inf + (self.h - h_inf)*np.exp(-self.dt/tauh)
 
     def _n(self):
         alpha_n = self.alpha_n()
         beta_n = self.beta_n()
         taun = 1/(alpha_n + beta_n)
         n_inf = alpha_n*taun
-        return n_inf + (self.n - n_inf)*np.exp(-self.dt/taun, dtype= dtype)
+        return n_inf + (self.n - n_inf)*np.exp(-self.dt/taun)
 
     def __call__(self, I_inp, I_pat):
         self.I_inp = I_inp
         self.I = I_pat*self.I_inp
-        for it in tqdm(range(self.niter)):
+        for it in range(self.niter):
             self.gNa_hist[it] = self.gNa()
             self.gK_hist[it] = self.gK()
             self.gTot_hist[it] = self.g_total(it)
@@ -127,4 +148,6 @@ class HHModel:
         axes[1][1].set_ylabel('current(mA)')
         axes[1][1].set_title('Current vs Time')
         fig.savefig(figname)
-        plt.show()
+        plt.clf()
+        plt.close('all')
+        #plt.show()
