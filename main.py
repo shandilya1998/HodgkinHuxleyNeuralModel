@@ -3,9 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-I_inp = 0.01
+I_inp = 0.1
 dt = 0.01
-niter = 100000
+niter = 10000
 I_pat = np.ones(niter)
 hh = HHModel(dt, niter)
 hh(I_inp, I_pat)

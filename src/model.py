@@ -46,10 +46,10 @@ class HHModel:
     def _v(self, it):
         v_inf = self.v_inf(it)
         tauv = self.tauv(it)
-        return v_inf + (self.v - v_inf)*np.exp(-self.dt/tauv, dtype= dtype)
+        return v_inf + (self.v - v_inf)*np.exp(-self.dt/tauv, dtype = dtype)
     
     def alpha_m(self):
-        return 0.1*(self.v + 40)/(1-np.exp(-(self.v + 55)/10, dtype= dtype))
+        return 0.1*(self.v + 40)/(1-np.exp(-(self.v + 40)/10, dtype= dtype))
 
     def beta_m(self):
         return 4*np.exp(-0.0556*(self.v + 65), dtype= dtype)
