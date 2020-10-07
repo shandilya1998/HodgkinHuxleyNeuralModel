@@ -12,22 +12,23 @@ hh = HHModel(dt, niter)
 hh(I_inp, I_pat)
 hh.plot('images/simulation_Iinp{inp}_constant.png'.format(inp = I_inp))
 """
-def find_freq( v_arr, niter, dt, div):
+def find_freq(v_arr, niter, dt, div):
     peaks, _ = sig.find_peaks(v_arr)
     spikes = [0]
     pos = 0
+    """"
     T = niter*div
     window = T
     for index in peaks:
-        if(v_arr[index] > 0 and index < window):
-            spikes[pos] += 1
-        elif window < index:
+        if(index < window):
+            if(v_arr[index] > 0):
+                spikes[pos] += 1
+        else:
             window += T
             pos += 1
             spikes.append(0)
             if(v_arr[index] > 0):
                 spikes[pos] += 1
-    #print(spikes)
     count = 0
     for num in spikes:
         count += num
@@ -36,24 +37,29 @@ def find_freq( v_arr, niter, dt, div):
     if count != 0: 
         spike_freq = count/(T*dt)
     return spike_freq
+    """
+    spikes = []
+    for peak in peaks:
+        if v_arr[peak]>0:
+            spikes.append(peak)
+    return 1000*(len(spikes)-1)/(niter*dt)
 
-
-div = 0.1
+div = 0.001
 
 dt = 0.01
 niter = 10000
 hh = HHModel(dt, niter)
 spike_freqs = []
 curr = []
-for i in tqdm(range(400)):
-    I_inp = i*0.003
+for i in tqdm(range(1200)):
+    I_inp = i*0.001
     I_pat = np.ones(niter)
     hh = HHModel(dt, niter)
     hh(I_inp, I_pat)
     hh.plot('images/simulation_Iinp{inp}_constant.png'.format(inp = I_inp))
-    hh.reset()
     curr.append(I_inp)
     spike_freqs.append(find_freq(hh.v_hist, niter, dt, div))
+    hh.reset()
 
 fig, axes = plt.subplots(1, 1)
 axes.plot(curr, spike_freqs)
